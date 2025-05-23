@@ -13,45 +13,28 @@ from helper_functions import print_board
 def evaluate_breakthrough(board, player):
     opponent = 'O' if player == 'X' else 'X'
     score = 0
+    linhas = len(board)
+    colunas = len(board[0])
+    chegada = linhas - 1 if player == 'X' else 0
 
-    def evaluate_window(window):
-        if window.count(player) == 4:
-            return 1000
-        elif window.count(player) == 3 and window.count(' ') == 1:
-            return 50
-        elif window.count(player) == 2 and window.count(' ') == 2:
-            return 10
-        elif window.count(opponent) == 3 and window.count(' ') == 1:
-            return -80
-        return 0
+    for l in range(linhas):
+        for c in range(colunas):
+            if board[l][c] == player:
+                # Pontua por distância até a chegada
+                dist = abs(l - chegada)  # Distância da peça até a linha de chegada
+                score += ((linhas - dist) ** 2) * 2  # Quanto mais perto, maior a pontuação
 
-    rows = len(board)
-    cols = len(board[0])
+                # Pontua por possibilidade de captura
+                nova_linha = l+1 if player == 'X' else l-1
+                if nova_linha in range(0,linhas) and (
+                    (c-1 >= 0 and board[nova_linha][c-1] == opponent) 
+                    or (c+1 <colunas and board[nova_linha][c+1] == opponent)):
+                    score += 100
 
-    # Avaliar janelas horizontais
-    for r in range(rows):
-        for c in range(cols - 3):
-            window = board[r][c:c+4]
-            score += evaluate_window(window)
-
-    # Avaliar janelas verticais
-    for r in range(rows - 3):
-        for c in range(cols):
-            window = [board[r+i][c] for i in range(4)]
-            score += evaluate_window(window)
-
-    # Avaliar janelas diagonais \
-    for r in range(rows - 3):
-        for c in range(cols - 3):
-            window = [board[r+i][c+i] for i in range(4)]
-            score += evaluate_window(window)
-
-    # Avaliar janelas diagonais /
-    for r in range(3, rows):
-        for c in range(cols - 3):
-            window = [board[r-i][c+i] for i in range(4)]
-            score += evaluate_window(window)
-
+                # Pontua por peça estar no centro
+                if 2 <= c <= 5:
+                    score += 20
+            #print(f"linha {l}, coluna {c}. Pontuação: {score}")
     return score
 
 
@@ -100,13 +83,17 @@ def play():
         if game.current == human:
             while True:
                 try:
-                    col = int(input(f"Sua jogada ({human}), escolha coluna (0-{COLS-1}): "))
-                    if col in game.available_moves():
-                        game.make_move(col)
+                    print(f"Sua jogada ({human})")
+                    l = int(input(f"Escolha a linha: "))
+                    c = int(input(f"Escolha a coluna: "))
+                    movimento = input("Escolha o movimento (frente, esquerda, direita): ").strip().lower()
+                    move = (l, c, movimento)
+                    if move in game.available_moves():
+                        game.make_move(move)
                         time.sleep(0.5)
                         break
                     else:
-                        print("Coluna inválida ou cheia.")
+                        print("Movimento inválido. Tente novamente.")
                 except ValueError:
                     print("Entrada inválida.")
         else:
@@ -125,5 +112,26 @@ def play():
     else:
         print(Fore.CYAN + "Empate.")
 
+def play_ai_vs_ai():
+    game = Breakthrough()
+    print("IA vs IA iniciando...")
+    time.sleep(1)
+
+    while not game.game_over():
+        game.print_board()
+        print(f"IA ({game.current}) pensando...")
+        move = best_move(game, depth=4)
+        print(f"IA ({game.current}) joga: {move}")
+        game.make_move(move)
+        time.sleep(0.8)
+
+    game.print_board()
+    winner = game.winner()
+    if winner:
+        print(Fore.YELLOW + f"A IA '{winner}' venceu!")
+    else:
+        print(Fore.CYAN + "Empate.")
+
+
 if __name__ == "__main__":
-    play()
+    play_ai_vs_ai()
