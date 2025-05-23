@@ -1,5 +1,6 @@
 from board_game import BoardGame
 import numpy as np
+from helper_functions import clear_screen, colorize
 
 class Breakthrough(BoardGame):
     def __init__(self, rows=8, cols=8):
@@ -86,3 +87,9 @@ class Breakthrough(BoardGame):
         if not any('O' in row for row in self.board):
             return 'X'
         return None
+    
+    def print_board(self):
+        clear_screen()
+        for idx, row in enumerate(self.board):
+            print(str(idx) + ' |' + '|'.join(colorize(cell) for cell in row) + '|')
+        print('   ' + ' '.join(map(str, range(self.cols))))

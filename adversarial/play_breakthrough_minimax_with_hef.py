@@ -69,9 +69,6 @@ def best_move(game, depth=4):
             move_choice = move
     return move_choice
 
-# Replace Breakthrough.print_board with updated function
-Breakthrough.print_board = lambda self: print_board(self.board, self.cols)
-
 def play():
     game = Breakthrough()
     human = input("Escolha seu lado (X ou O): ").strip().upper()
