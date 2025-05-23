@@ -5,92 +5,84 @@ class Breakthrough(BoardGame):
     def __init__(self, rows=8, cols=8):
         super().__init__(rows,cols)
         # Conjunto com as posições iniciais das peças dos jogadores
-        #Jogador X ocupa as linhas 0 e 1
-        self.pecas_jogadorX = [(c,l) for c in range(cols) for l in range(0,1)]
-        # Jogador O ocupa as ultimas duas linhas
-        self.pecas_jogadorO = [(c,l) for c in range(cols) for l in range(rows-1,rows)]
+        self.inicializar_tabuleiro()
+
+    def inicializar_tabuleiro(self):
+        for i in range(self.cols):
+            # Jogador X ocupa as duas primeiras linhas
+            self.board[0][i] = 'X'
+            self.board[1][i] = 'X'
+            # Jogador O ocupa as duas últimas linhas
+            self.board[self.rows-2][i] = 'O'
+            self.board[self.rows-1][i] = 'O'
+
+            # Preenche o restante do tabuleiro com espaços vazios
+            for j in range(2, self.rows-2):
+                self.board[j][i] = ' '
+            
 
     def available_moves(self):
         movimentos = []
-        if self.current == 'X':
-            # Jogador X pode mover para baixo ou diagonalmente
-            for c,l in self.pecas_jogadorX:
-                if c+1 < self.cols and (c+1, l) not in self.pecas_jogadorO:
-                    movimentos.append(((c,l), "frente"))
-                if c+1 < self.cols and l+1 < self.rows:
-                    movimentos.append(((c,l), "direita"))
-                elif c+1 < self.cols and l-1 >= 0:
-                    movimentos.append(((c,l), "esquerda"))
-                return movimentos
-        elif self.current == 'O':
-            # Jogador O pode mover para cima ou diagonalmente
-            for c,l in self.pecas_jogadorO:
-                if c-1 >= 0 and (c-1, l) not in self.pecas_jogadorX:
-                    movimentos.append(((c,l), "frente"))
-                if c-1 >= 0 and l+1 < self.rows:
-                    movimentos.append(((c,l), "direita"))
-                elif c-1 >= 0 and l-1 >= 0:
-                    movimentos.append(((c,l), "esquerda"))
-                return movimentos
+        for l in range(self.rows):
+            for c in range(self.cols):
+                if self.board[l][c] == self.current:
+                    # Jogador X se move para baixo e O para cima
+                    nova_linha = l+1 if self.current == 'X' else l-1
+                    # Verifica se a nova linha está dentro dos limites do tabuleiro 
+                    if nova_linha in range(self.rows): 
+                        # Verifica se a peça pode se mover para frente
+                        if self.board[nova_linha][c] == ' ': # Deve estar vazio
+                            movimentos.append((l, c, "frente"))
+                        # Verifica se a peça pode se mover para a direita
+                        if c+1 < self.cols and self.board[nova_linha][c + 1] != self.current:
+                            movimentos.append((l, c, "direita"))
+                        # Verifica se a peça pode se mover para a esquerda
+                        if  c > 0 and self.board[nova_linha][c - 1] != self.current:
+                            movimentos.append((l, c, "esquerda"))
+        return movimentos
         
-    def make_move(self, peca, move):
-        if self.current == 'X':
-            if move=="frente" and self.board[peca[0]][peca[1]+1] == ' ':
-                self.board[peca[0]][peca[1]] = ' '
-                self.board[peca[0]][peca[1]+1] = 'X'
-                self.pecas_jogadorX.remove(peca)
-                self.pecas_jogadorX.append((peca[0], peca[1]+1))
-                return True
-            if move=="direita":
-                if self.board[peca[0]+1][peca[1]+1] == '0':
-                    self.pecas_jogadorO.remove((peca[0]+1, peca[1]+1))
-                self.board[peca[0]][peca[1]] = ' '
-                self.board[peca[0]+1][peca[1]+1] = 'X'
-                self.pecas_jogadorX.remove(peca)
-                self.pecas_jogadorX.append((peca[0]+1, peca[1]+1))
-                return True
-            elif move=="esquerda":
-                if self.board[peca[0]+1][peca[1]-1] == '0':
-                    self.pecas_jogadorO.remove((peca[0]+1, peca[1]-1))
-                self.board[peca[0]][peca[1]] = ' '
-                self.board[peca[0]+1][peca[1]-1] = 'X'
-                self.pecas_jogadorX.remove(peca)
-                self.pecas_jogadorX.append((peca[0]+1, peca[1]-1))
-                return True
+        
+    def make_move(self, move):
+        l = move[0]
+        c = move[1]
+        movimento = move[2]
+        # Jogador X se move para baixo e O para cima
+        nova_linha = l+1 if self.current == 'X' else l-1
 
-        elif self.current == 'O':
-            if move=="frente" and self.board[peca[0]][peca[1]-1] == ' ':
-                self.board[peca[0]][peca[1]] = ' '
-                self.board[peca[0]][peca[1]-1] = 'X'
-                self.pecas_jogadorX.remove(peca)
-                self.pecas_jogadorX.append((peca[0], peca[1]-1))
+        if movimento == "frente":
+            # Só pode se mover para frente se estiver vazio
+            if nova_linha in range(self.rows) and self.board[nova_linha][c] == ' ':
+                self.board[l][c] = ' '
+                self.board[nova_linha][c] = self.current
+                self.current = 'O' if self.current == 'X' else 'X'
                 return True
-            if move=="direita":
-                if self.board[peca[0]+1][peca[1]-1] == '0':
-                    self.pecas_jogadorO.remove((peca[0]+1, peca[1]-1))
-                self.board[peca[0]][peca[1]] = ' '
-                self.board[peca[0]+1][peca[1]-1] = 'X'
-                self.pecas_jogadorX.remove(peca)
-                self.pecas_jogadorX.append((peca[0]+1, peca[1]-1))
-                return True
-            elif move=="esquerda":
-                if self.board[peca[0]+1][peca[1]-1] == '0':
-                    self.pecas_jogadorO.remove((peca[0]+1, peca[1]-1))
-                self.board[peca[0]][peca[1]] = ' '
-                self.board[peca[0]+1][peca[1]-1] = 'X'
-                self.pecas_jogadorX.remove(peca)
-                self.pecas_jogadorX.append((peca[0]+1, peca[1]-1))
-                return True
-
-        return False
-
-    def winner(self):
-        if self.current == 'X':
-            for p in self.pecas_jogadorX:
-                if p[1] == self.rows - 1:
-                    return 'X'
+            else:
+                self.current = 'O' if self.current == 'X' else 'X'
+                return False
         else:
-            for p in self.pecas_jogadorO:
-                if p[1] == 0:
-                    return 'O'
+            nova_coluna = c+1 if movimento == "direita" else c-1
+            # Pode se mover na diagonal se estiver vazio ou ocupado pelo oponente
+            if nova_coluna in range(self.cols) and self.board[nova_linha][nova_coluna] != self.current:
+                self.board[l][c] = ' '
+                self.board[nova_linha][nova_coluna] = self.current
+                self.current = 'O' if self.current == 'X' else 'X'
+                return True
+            else:
+                self.current = 'O' if self.current == 'X' else 'X'
+                return False
+           
+    def winner(self):
+        for c in range(self.cols):
+            # Verifica se tem alguma peça do jogador O na primeira linha
+            if self.board[0][c] == 'O':
+                return 'O'
+            # Verifica se tem alguma peça do jogador X na última linha
+            if self.board[self.rows-1][c] == 'X':
+                return 'X'
+        
+        # Um jogador ganha se o outro fica sem peças
+        if not any('X' in row for row in self.board):
+            return 'O'
+        if not any('O' in row for row in self.board):
+            return 'X'
         return None
