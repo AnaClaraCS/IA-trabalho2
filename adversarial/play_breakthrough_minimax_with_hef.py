@@ -20,35 +20,32 @@ def evaluate_breakthrough(board, player):
     for l in range(linhas):
         for c in range(colunas):
             if board[l][c] == player:
-                # Pontua por distância até a chegada
+                # 1- Pontua por distância até a chegada
                 dist = abs(l - chegada)  # Distância da peça até a linha de chegada
                 score += ((linhas - dist) ** 2) * 2  # Quanto mais perto, maior a pontuação
 
-                # Pontua por possibilidade de captura
+                # 2- Pontua por possibilidade de captura
                 nova_linha = l+1 if player == 'X' else l-1
                 if nova_linha in range(0,linhas) and (
                     (c-1 >= 0 and board[nova_linha][c-1] == opponent) 
                     or (c+1 <colunas and board[nova_linha][c+1] == opponent)):
                     score += 100
 
-                # Pontua por peça estar no centro
+                # 3- Pontua por peça estar no centro
                 if 2 <= c <= 5:
                     score += 20
-            #print(f"linha {l}, coluna {c}. Pontuação: {score}")
     return score
-
-
 
 # AI Move Selector
 def best_move(game, depth=4):
     '''
-    Essa função determina a melhor jogada para a IA em um jogo de Connect Four,
+    Essa função determina a melhor jogada para a IA em um jogo de Breakthrough,
     utilizando o algoritmo Minimax com uma função de avaliação heurística.
     Ela avalia todas as jogadas disponíveis e escolhe a que maximiza a pontuação
     heurística para o jogador atual, considerando a profundidade especificada.
-    :param game: Instância do jogo Connect Four
+    :param game: Instância do jogo Breakthrough
     :param depth: Profundidade da busca Minimax
-    :return: A melhor coluna para jogar
+    :return: O melhor movimento para jogar
     '''
     player = game.current
     best_score = float('-inf')
@@ -56,7 +53,6 @@ def best_move(game, depth=4):
     for move in game.available_moves():
         new_game = game.copy()
         new_game.make_move(move)
-        # score = minimax_with_dls(new_game, depth - 1, False, player)
         score = minimax_with_hef(
             game=new_game,
             depth=depth - 1,
@@ -96,7 +92,7 @@ def play():
         else:
             print("IA pensando...")
             move = best_move(game, depth=4)
-            print(f"IA joga na coluna {move}")
+            print(f"IA faz movimento: {move}")
             game.make_move(move)
             time.sleep(0.8)
 
@@ -131,4 +127,4 @@ def play_ai_vs_ai():
 
 
 if __name__ == "__main__":
-    play_ai_vs_ai()
+    play()

@@ -3,9 +3,7 @@ import time
 from colorama import Fore, Style, init
 init(autoreset=True)
 
-from connect_four import ConnectFour, ROWS, COLS
 from mcts import mcts
-from helper_functions import print_board
 from breakthrough import Breakthrough
 
 def play():
@@ -18,7 +16,7 @@ def play():
     ai = 'O' if human == 'X' else 'X'
 
     while not game.game_over():
-        print_board(game.board, COLS)
+        game.print_board()
         if game.current == human:
             while True:
                 try:
@@ -32,17 +30,17 @@ def play():
                         time.sleep(0.5)
                         break
                     else:
-                        print("Coluna inválida ou cheia.")
+                        print("Movimento inválido.")
                 except ValueError:
                     print("Entrada inválida.")
         else:
             print("IA pensando...")
             move = mcts(game, iterations=200)
-            print(f"IA joga na coluna {move}")
+            print(f"IA faz movimento: {move}")
             game.make_move(move)
             time.sleep(0.5)
 
-    print_board(game.board)
+    game.print_board()
     winner = game.winner()
     if winner == human:
         print("Você venceu!")
@@ -62,7 +60,7 @@ def play_ai_vs_ai():
         move = mcts(game, iterations=200)
         print(f"IA ({game.current}) joga: {move}")
         game.make_move(move)
-        time.sleep(0.8)
+        time.sleep(1)
 
     game.print_board()
     winner = game.winner()
@@ -73,4 +71,4 @@ def play_ai_vs_ai():
 
 
 if __name__ == "__main__":
-    play_ai_vs_ai()
+    play()
