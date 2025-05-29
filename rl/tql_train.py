@@ -7,9 +7,9 @@ from tql import QLearningAgentTabular
 
 from taxi_environment import TaxiEnvironment
 from blackjack_environment import BlackjackEnvironment
-from cliffWalking_environment import CliffWalkingEnvironment
+from cliff_walking_environment import CliffWalkingEnvironment
 from frozen_lake_environment import FrozenLakeEnvironment
-from mountaincair_environment import MountainCar
+from mountaincair_environment import MountainCarEnvironment
 
 environment_dict = {
     "Blackjack-v1": BlackjackEnvironment,
@@ -20,7 +20,7 @@ environment_dict = {
     "FrozenLake-v1": FrozenLakeEnvironment,
 
     # Adiconando ambiente da questão 3.2
-    "MountainCar-v0": MountainCar
+    "MountainCar-v0": MountainCarEnvironment
 
 }
 
@@ -61,8 +61,8 @@ if __name__ == "__main__":
     plt.close()
 
     plt.plot(agent.epsilons_)
-    plt.title(f"Decaimento do valor de $\epsilon$ ({args.env_name})")
+    plt.title(r"Decaimento do valor de $\epsilon$ ({args.env_name})")
     plt.xlabel('Episódio')
-    plt.ylabel('$\epsilon$')
+    plt.ylabel(r'$\epsilon$')
     plt.savefig(args.env_name + "-tql-epsilons.png")
     plt.close()

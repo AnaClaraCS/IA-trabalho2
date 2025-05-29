@@ -3,7 +3,7 @@ import numpy as np
 from environment import Environment
 import random
 
-class MountainCar(Environment):
+class MountainCarEnvironment(Environment):
     def __init__(self, env, bins=(30, 30)):
         super().__init__(env)
         self.bins = bins
