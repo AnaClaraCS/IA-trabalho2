@@ -8,7 +8,8 @@ from tql import QLearningAgentTabular
 from taxi_environment import TaxiEnvironment
 from blackjack_environment import BlackjackEnvironment
 from cliffWalking_environment import CliffWalkingEnvironment
-from rl.frozen_lake_environment import FrozenLakeEnvironment
+from frozen_lake_environment import FrozenLakeEnvironment
+from mountaincair_environment import MountainCar
 
 environment_dict = {
     "Blackjack-v1": BlackjackEnvironment,
@@ -16,7 +17,10 @@ environment_dict = {
 
     # Adicionando os novos ambientes da questão 3.1
     "CliffWalking-v0": CliffWalkingEnvironment,
-    "FrozenLake-v1": FrozenLakeEnvironment
+    "FrozenLake-v1": FrozenLakeEnvironment,
+
+    # Adiconando ambiente da questão 3.2
+    "MountainCar-v0": MountainCar
 
 }
 
