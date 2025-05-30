@@ -4,7 +4,7 @@ from environment import Environment
 import random
 
 class MountainCarEnvironment(Environment):
-    def __init__(self, env, bins=(30, 30)):
+    def __init__(self, env, bins=(10, 10)):
         super().__init__(env)
         self.bins = bins
 
@@ -37,3 +37,13 @@ class MountainCarEnvironment(Environment):
 
         # 2- Mapeie os estados contínuos para representações discretas
         return pos_bin * self.bins[1] + vel_bin
+    
+    # def reset(self, **kwargs):
+    #     obs, info = self.env.reset(**kwargs)
+    #     state_id = self.get_state_id(obs)
+    #     return state_id, info
+
+    # def step(self, action):
+    #     obs, reward, terminated, truncated, info = self.env.step(action)
+    #     state_id = self.get_state_id(obs)
+    #     return state_id, reward, terminated, truncated, info
