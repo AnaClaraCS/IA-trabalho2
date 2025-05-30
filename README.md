@@ -18,7 +18,7 @@ Arquivos criados:
 * cliff_walking_environment.py
 * frozen_lake_environment
 
-2. Foi preciso adicionar os novos ambientes no dicionário de tq train
+2. Foi preciso adicionar os novos ambientes no dicionário de tql train
 
 3. Treinamento e Teste
 
@@ -45,3 +45,35 @@ O fozen lake tem uma recompensa média de 0.132, ou seja, chegou ao objetivo em 
 
 1. Imprementação do ambiente Mountain Car
 mountaincair_environment.py
+
+2. Treino e teste
+python tql_train.py --env_name MountainCar-v0 --num_episodes 10000
+python tql_test.py --env_name MountainCar-v0 --num_episodes 10000
+
+
+### Q-learning com Aproximação Linear (2,0 pts)
+
+1. Implementação das features extractor
+* cliff_walking_feature_extractor.py
+* frozen_lake_feature_extractor.py
+* mountaincair_feature_extractor.py
+
+2. Foi preciso adionar as novas implementações no dicionário de lql train
+
+3. Treinamento e teste
+
+* Blackjack
+python lql_train.py --num_episodes 10000 --max_steps 100 --env_name Blackjack-v1
+python lql_test.py --num_episodes 200 --env_name Blackjack-v1
+
+* Cliff Walking
+python lql_train.py --num_episodes 10000 --max_steps 100 --env_name CliffWalking-v0 
+python lql_test.py --num_episodes 200 --env_name CliffWalking-v0
+
+* Frozen Lake
+python lql_train.py --num_episodes 10000 --max_steps 100 --env_name FrozenLake-v1 
+python lql_test.py --num_episodes 200 --env_name FrozenLake-v1
+
+* Mountain Car
+python lql_train.py --num_episodes 10000 --max_steps 100 --env_name MountainCar-v0
+python lql_test.py --num_episodes 200 --env_name MountainCar-v0
